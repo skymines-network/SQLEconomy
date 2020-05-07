@@ -1,0 +1,5 @@
+main: be.renaud11232.plugins.sqleconomy.SQLEconomyPlugin
+name: SQLEconomy
+version: 1.0.0
+description: An Economy plugin that stores data into a database.
+author: Renaud11232
