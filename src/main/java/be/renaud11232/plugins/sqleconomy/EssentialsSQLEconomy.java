@@ -2,10 +2,22 @@ package be.renaud11232.plugins.sqleconomy;
 
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-public class SQLEconomy extends AbstractEconomy {
+public class EssentialsSQLEconomy extends AbstractEconomy {
+
+    private final String name = "SQL Economy";
+    private final Logger logger;
+    private Plugin plugin;
+
+    public EssentialsSQLEconomy(Plugin plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
+    }
+
     @Override
     public boolean isEnabled() {
         return false;
@@ -13,7 +25,7 @@ public class SQLEconomy extends AbstractEconomy {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -23,7 +35,7 @@ public class SQLEconomy extends AbstractEconomy {
 
     @Override
     public int fractionalDigits() {
-        return 0;
+        return 2;
     }
 
     @Override

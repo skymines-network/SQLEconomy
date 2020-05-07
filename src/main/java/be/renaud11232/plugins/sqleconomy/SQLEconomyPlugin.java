@@ -9,7 +9,7 @@ public class SQLEconomyPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        SQLEconomy economy = new SQLEconomy();
+        EssentialsSQLEconomy economy = new EssentialsSQLEconomy(this);
         Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
     }
 
