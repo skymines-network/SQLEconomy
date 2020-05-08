@@ -38,15 +38,15 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    public String currencyNamePlural() {
-        //TODO
-        return "plur";
-    }
-
-    @Override
     public String currencyNameSingular() {
         //TODO
         return "sing";
+    }
+
+    @Override
+    public String currencyNamePlural() {
+        //TODO
+        return "plur";
     }
 
     @Override
@@ -68,7 +68,7 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
         //TODO
         return null;
     }
