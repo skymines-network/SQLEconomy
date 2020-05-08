@@ -50,15 +50,47 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    @Deprecated
-    public boolean hasAccount(String playerName) {
-        return hasAccount(plugin.getServer().getOfflinePlayer(playerName));
-    }
-
-    @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
         //TODO
         return true;
+    }
+
+    @Override
+    public double getBalance(OfflinePlayer player) {
+        //TODO
+        return 20;
+    }
+
+    @Override
+    public boolean has(OfflinePlayer player, double amount) {
+        //TODO
+        return true;
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer player) {
+        //TODO
+        return true;
+    }
+
+    // Other methods of the interface that use the previous methods
+
+    @Override
+    @Deprecated
+    public boolean hasAccount(String playerName) {
+        return hasAccount(plugin.getServer().getOfflinePlayer(playerName));
     }
 
     @Override
@@ -79,12 +111,6 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    public double getBalance(OfflinePlayer player) {
-        //TODO
-        return 20;
-    }
-
-    @Override
     @Deprecated
     public double getBalance(String playerName, String worldName) {
         return getBalance(plugin.getServer().getOfflinePlayer(playerName), worldName);
@@ -99,12 +125,6 @@ public class SQLEconomy implements Economy {
     @Deprecated
     public boolean has(String playerName, double amount) {
         return has(plugin.getServer().getOfflinePlayer(playerName), amount);
-    }
-
-    @Override
-    public boolean has(OfflinePlayer player, double amount) {
-        //TODO
-        return true;
     }
 
     @Override
@@ -125,12 +145,6 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        //TODO
-        return null;
-    }
-
-    @Override
     @Deprecated
     public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
         return withdrawPlayer(plugin.getServer().getOfflinePlayer(playerName), worldName, amount);
@@ -145,12 +159,6 @@ public class SQLEconomy implements Economy {
     @Deprecated
     public EconomyResponse depositPlayer(String playerName, double amount) {
         return depositPlayer(plugin.getServer().getOfflinePlayer(playerName), amount);
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        //TODO
-        return null;
     }
 
     @Override
@@ -169,12 +177,6 @@ public class SQLEconomy implements Economy {
     @Deprecated
     public boolean createPlayerAccount(String playerName) {
         return createPlayerAccount(plugin.getServer().getOfflinePlayer(playerName));
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer player) {
-        //TODO
-        return true;
     }
 
     @Override
