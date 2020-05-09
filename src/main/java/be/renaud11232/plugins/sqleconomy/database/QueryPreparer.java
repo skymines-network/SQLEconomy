@@ -34,7 +34,7 @@ public class QueryPreparer {
         Map<String, Integer> paramPosition = new HashMap<>();
         String regex = "\\{\\{(" + allParameters.stream().map(Pattern::quote).collect(Collectors.joining("|")) + ")\\}\\}";
         Matcher matcher = Pattern.compile(regex).matcher(query);
-        int i = 0;
+        int i = 1;
         while(matcher.find()) {
             paramPosition.put(matcher.group(1), i++);
         }

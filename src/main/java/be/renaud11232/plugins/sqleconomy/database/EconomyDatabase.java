@@ -1,9 +1,12 @@
 package be.renaud11232.plugins.sqleconomy.database;
 
 import be.renaud11232.plugins.sqleconomy.SQLEconomyPlugin;
+import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
+import be.renaud11232.plugins.sqleconomy.database.exceptions.PlayerNotFoundException;
 import org.bukkit.OfflinePlayer;
-
+;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EconomyDatabase {
@@ -14,22 +17,47 @@ public class EconomyDatabase {
         this.plugin = plugin;
     }
 
-    private PreparedStatement prepare(String query, OfflinePlayer player) throws SQLException {
-        boolean useUUID;
-        String customQuery;
-        if(query.contains("{{player_name}}")) {
-            useUUID = false;
-            customQuery = query.replace("{{player_name}}", "?");
-        } else {
-            useUUID =  true;
-            customQuery = query.replace("{{player_uuid}}", "?");
+    public void beginTransaction() throws DatabaseException {
+        try {
+            plugin.getDatabaseConnection().setAutoCommit(false);
+        } catch(SQLException e) {
+            throw new DatabaseException("Could not begin a transaction : " + e.getMessage(), e);
         }
-        PreparedStatement statement = plugin.getDatabaseConnection().prepareStatement(customQuery);
-        if(useUUID) {
-            statement.setString(0, player.getUniqueId().toString());
-        } else {
-            statement.setString(0, player.getName());
-        }
-        return statement;
     }
+
+    public void commitTransaction() throws DatabaseException {
+        try {
+            plugin.getDatabaseConnection().commit();
+            plugin.getDatabaseConnection().setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not commit a transaction : " + e.getMessage(), e);
+        }
+    }
+
+    public void rollbackTransaction() throws DatabaseException {
+        try {
+            plugin.getDatabaseConnection().rollback();
+            plugin.getDatabaseConnection().setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not rollback a transaction : " + e.getMessage(), e);
+        }
+    }
+
+    public double getPlayerBalance(OfflinePlayer player) throws DatabaseException, PlayerNotFoundException {
+        QueryPreparer preparer = new QueryPreparer();
+        preparer.setString("player_name", player.getName());
+        preparer.setString("player_uuid", player.getUniqueId().toString());
+        try (
+                PreparedStatement statement = preparer.prepare(plugin.getDatabaseConnection(), plugin.getConfig().getString("queries.get_balance"));
+                ResultSet resultSet = statement.executeQuery()
+        ) {
+            if(resultSet.next()) {
+                return resultSet.getDouble(1);
+            }
+            throw new PlayerNotFoundException("Unable to get the balance for the player " + player.getName() + ". The database returned an empty set.");
+        } catch (SQLException e) {
+            throw new DatabaseException("Unable to get the balance for the player : " + e.getMessage(), e);
+        }
+    }
+
 }

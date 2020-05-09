@@ -1,6 +1,6 @@
 package be.renaud11232.plugins.sqleconomy;
 
-import be.renaud11232.plugins.sqleconomy.database.DatabaseException;
+import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
 import be.renaud11232.plugins.sqleconomy.database.EconomyDatabase;
 import be.renaud11232.plugins.sqleconomy.database.connector.DatabaseType;
 import net.milkbowl.vault.economy.Economy;

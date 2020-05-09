@@ -1,6 +1,6 @@
 package be.renaud11232.plugins.sqleconomy.database.connector;
 
-import be.renaud11232.plugins.sqleconomy.database.DatabaseException;
+import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
@@ -18,7 +18,7 @@ public class MySQLConnector implements DatabaseConnector {
             String database = configuration.getString("database_connection.database");
             String user = configuration.getString("database_connection.user");
             String password = configuration.getString("database_connection.password", "");
-            return DriverManager.getConnection(String.format("jdbc:mysql://%s:%d/%s", host, port, database),user, password);
+            return DriverManager.getConnection(String.format("jdbc:mysql://%s:%d/%s?useSSL=false", host, port, database),user, password);
         } catch (ClassNotFoundException | SQLException e) {
             throw new DatabaseException("Unable to create a database connection : " + e.getMessage(), e);
         }

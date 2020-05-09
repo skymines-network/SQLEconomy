@@ -1,5 +1,7 @@
 package be.renaud11232.plugins.sqleconomy;
 
+import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
+import be.renaud11232.plugins.sqleconomy.database.exceptions.PlayerNotFoundException;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -59,8 +61,28 @@ public class SQLEconomy implements Economy {
 
     @Override
     public double getBalance(OfflinePlayer player) {
-        //TODO
-        return 20;
+        synchronized (plugin.getDatabase()) {
+            double balance;
+            try {
+                plugin.getDatabase().beginTransaction();
+                try {
+                    balance = plugin.getDatabase().getPlayerBalance(player);
+                } catch (PlayerNotFoundException e) {
+                    createPlayerAccount(player);
+                    balance = 0;
+                }
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                try {
+                    plugin.getLogger().severe(e.getMessage());
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe(rollbackException.getMessage());
+                }
+                balance = 0;
+            }
+            return balance;
+        }
     }
 
     @Override
