@@ -47,4 +47,8 @@ public class SQLEconomyPlugin extends JavaPlugin {
         return economyDatabase;
     }
 
+    public Connection getDatabaseConnection() {
+        return databaseConnection;
+    }
+
 }

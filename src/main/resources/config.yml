@@ -7,4 +7,10 @@ database_connection:
   password: db_password
 
 queries:
-  get_balance: "select amount from balance where player = {{player_uuid}}"
+  get_balance:
+    - "SELECT amount FROM balance WHERE player = {{player_uuid}}"
+
+currency:
+  symbol: "€"
+  name_singular: "Euro"
+  name_plural: "Euros"

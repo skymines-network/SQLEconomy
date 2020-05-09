@@ -31,25 +31,28 @@ public class SQLEconomy implements Economy {
     }
 
     @Override
-    public String format(double v) {
-        //TODO
-        return "";
+    public String format(double amount) {
+        return String.format("%f %s", amount, plugin.getConfig().getString("currency.symbol"));
     }
 
     @Override
     public String currencyNameSingular() {
-        //TODO
-        return "sing";
+        return plugin.getConfig().getString("currency.name_singular");
     }
 
     @Override
     public String currencyNamePlural() {
-        //TODO
-        return "plur";
+        return plugin.getConfig().getString("currency.name_plural");
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer offlinePlayer) {
+        //TODO
+        return true;
+    }
+
+    @Override
+    public boolean createPlayerAccount(OfflinePlayer player) {
         //TODO
         return true;
     }
@@ -76,12 +79,6 @@ public class SQLEconomy implements Economy {
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
         //TODO
         return null;
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer player) {
-        //TODO
-        return true;
     }
 
     // Other methods of the interface that use the previous methods
