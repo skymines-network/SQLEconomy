@@ -47,6 +47,9 @@ queries:
   # {{new_balance}} : The new total balance for the player
   debit:
     - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"
+  #SQL statement list (can be only 1) that will create a player bank account.
+  create_account:
+    - "INSERT INTO balance (player, amount) VALUES ({{player_uuid}}, 0)"
 
 #Currency options
 currency:

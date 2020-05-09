@@ -81,8 +81,8 @@ public class SQLEconomy implements Economy {
     }
 
     private boolean doCreatePlayerAccount(OfflinePlayer player) throws DatabaseException {
-        //TODO
-        return false;
+        plugin.getDatabase().createPlayerAccount(player);
+        return true;
     }
 
     @Override

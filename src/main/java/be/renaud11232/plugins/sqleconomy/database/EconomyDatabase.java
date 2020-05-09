@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class EconomyDatabase {
 
@@ -53,12 +54,27 @@ public class EconomyDatabase {
                 ResultSet resultSet = statement.executeQuery()
         ) {
             if(resultSet.next()) {
-                //return resultSet.getDouble(1);
                 return resultSet.getBigDecimal(1);
             }
             throw new PlayerNotFoundException("Unable to get the balance for the player " + player.getName() + ". The database returned an empty set.");
         } catch (SQLException e) {
             throw new DatabaseException("Unable to get the balance for the player : " + e.getMessage(), e);
+        }
+    }
+
+    public void createPlayerAccount(OfflinePlayer player) throws DatabaseException {
+        QueryPreparer preparer = new QueryPreparer();
+        preparer.setString("player_name", player.getName());
+        preparer.setString("player_uuid", player.getUniqueId().toString());
+        List<String> queries = plugin.getConfig().getStringList("queries.create_account");
+        for(String query : queries) {
+            try (
+                    PreparedStatement statement = preparer.prepare(plugin.getDatabaseConnection(), query);
+            ){
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new DatabaseException("Unable to create an account for the player : " + e.getMessage(), e);
+            }
         }
     }
 
