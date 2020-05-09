@@ -1,16 +1,58 @@
+#The database connection options
 database_connection:
+  #Possible answers : MYSQL
+  #Defaults to MYSQL if omitted
   type: MYSQL
+  #The database host
+  #Required by [MYSQL]
+  #Ignored by []
   host: localhost
+  #The database port
+  #Required by [MYSQL]
+  #Ignored by []
   port: 3306
+  #The database name
+  #Required by [MYSQL]
+  #Ignored by []
   database: db_name
+  #The database username
+  #Required by [MYSQL]
+  #Ignored by []
   user: db_user
+  #The database password
+  #Required by [MYSQL]
+  #Ignored by []
   password: db_password
 
+#The various SQL queries that will be used in order to interact with the database in order to get/set player balances
+#For all queries you can use The dialect of your database of plain standard SQL
+#There are two global placeholders:
+# {{player_uuid}} : Will be replaced in a prepared statement by the UUID of the player
+# {{player_name}} : Will be replaced in a prepared statement by the name of the player
+#All money transfers will be done in SQL transactions to prevent issues with concurrent access. (If your database is used on a website for instance)
 queries:
-  get_balance:
-    - "SELECT amount FROM balance WHERE player = {{player_uuid}}"
+  #Single SQL statement that will return the current player balance.
+  #This query must return 1 line and 1 column if the player has an account
+  #Or an empty set (0 line) if the player doesn't have an account
+  get_balance: "SELECT amount FROM balance WHERE player = {{player_uuid}}"
+  #SQL statement list (can be only 1) that will modify the database to reflect that the player account has been credited
+  #In addition to global placeholders you can use
+  # {{amount}} : The amount that will be credited
+  # {{new_balance}} : The new total balance for the player
+  credit:
+    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"
+  #SQL statement list (can be only 1) that will modify the database to reflect that the player account has been debited
+  #In addition to global placeholders you can use
+  # {{amount}} : The amount that will be debited
+  # {{new_balance}} : The new total balance for the player
+  debit:
+    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"
 
+#Currency options
 currency:
+  #The symbol that represents your currency
   symbol: "€"
+  #The name of your currency (singular)
   name_singular: "Euro"
+  #The name of your currency (plural)
   name_plural: "Euros"
