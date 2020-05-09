@@ -1,4 +1,10 @@
+database_connection:
+  type: MYSQL
+  host: localhost
+  port: 3306
+  database: db_name
+  user: db_user
+  password: db_password
 
-
-#Do NOT edit this
-__version: 1
+queries:
+  get_balance: "select amount from balance where player = {{player_uuid}}"

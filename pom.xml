@@ -6,7 +6,7 @@
 
     <groupId>be.renaud11232.plugins</groupId>
     <artifactId>sqleconomy</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
 
     <build>
         <plugins>
