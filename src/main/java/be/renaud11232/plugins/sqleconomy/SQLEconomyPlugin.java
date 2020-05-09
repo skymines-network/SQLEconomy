@@ -1,6 +1,7 @@
 package be.renaud11232.plugins.sqleconomy;
 
 import be.renaud11232.plugins.sqleconomy.database.DatabaseException;
+import be.renaud11232.plugins.sqleconomy.database.EconomyDatabase;
 import be.renaud11232.plugins.sqleconomy.database.connector.DatabaseType;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -13,12 +14,14 @@ import java.sql.SQLException;
 public class SQLEconomyPlugin extends JavaPlugin {
 
     private Connection databaseConnection;
+    private EconomyDatabase economyDatabase;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         try {
-            databaseConnection = DatabaseType.valueOf(getConfig().getString("database_connection.type", "database_type").toUpperCase()).getConnection(getConfig());
+            databaseConnection = DatabaseType.valueOf(getConfig().getString("database_connection.type", "MYSQL").toUpperCase()).getConnection(getConfig());
+            economyDatabase = new EconomyDatabase(this);
             SQLEconomy economy = new SQLEconomy(this);
             Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
         } catch (DatabaseException e) {
@@ -39,4 +42,9 @@ public class SQLEconomyPlugin extends JavaPlugin {
             getLogger().severe("Unable to properly close database connection : " + e.getMessage());
         }
     }
+
+    public EconomyDatabase getDatabase() {
+        return economyDatabase;
+    }
+
 }

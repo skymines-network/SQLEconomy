@@ -3,16 +3,15 @@ package be.renaud11232.plugins.sqleconomy;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
 import java.util.List;
 
 public class SQLEconomy implements Economy {
 
-    private final Plugin plugin;
+    private final SQLEconomyPlugin plugin;
 
-    public SQLEconomy(Plugin plugin) {
+    public SQLEconomy(SQLEconomyPlugin plugin) {
         this.plugin = plugin;
     }
 
