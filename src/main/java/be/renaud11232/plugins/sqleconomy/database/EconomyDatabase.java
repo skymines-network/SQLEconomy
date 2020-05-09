@@ -4,7 +4,8 @@ import be.renaud11232.plugins.sqleconomy.SQLEconomyPlugin;
 import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
 import be.renaud11232.plugins.sqleconomy.database.exceptions.PlayerNotFoundException;
 import org.bukkit.OfflinePlayer;
-;
+
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class EconomyDatabase {
         }
     }
 
-    public double getPlayerBalance(OfflinePlayer player) throws DatabaseException, PlayerNotFoundException {
+    public BigDecimal getPlayerBalance(OfflinePlayer player) throws DatabaseException, PlayerNotFoundException {
         QueryPreparer preparer = new QueryPreparer();
         preparer.setString("player_name", player.getName());
         preparer.setString("player_uuid", player.getUniqueId().toString());
@@ -52,7 +53,8 @@ public class EconomyDatabase {
                 ResultSet resultSet = statement.executeQuery()
         ) {
             if(resultSet.next()) {
-                return resultSet.getDouble(1);
+                //return resultSet.getDouble(1);
+                return resultSet.getBigDecimal(1);
             }
             throw new PlayerNotFoundException("Unable to get the balance for the player " + player.getName() + ". The database returned an empty set.");
         } catch (SQLException e) {

@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,16 +48,72 @@ public class SQLEconomy implements Economy {
         return plugin.getConfig().getString("currency.name_plural");
     }
 
+    private boolean doHasAccount(OfflinePlayer player) throws DatabaseException {
+        boolean hasAccount;
+        try {
+            plugin.getDatabase().getPlayerBalance(player);
+            hasAccount = true;
+        } catch (PlayerNotFoundException e) {
+            hasAccount = false;
+        }
+        return hasAccount;
+    }
+
     @Override
-    public boolean hasAccount(OfflinePlayer offlinePlayer) {
+    public boolean hasAccount(OfflinePlayer player) {
+        synchronized (plugin.getDatabase()) {
+            boolean hasAccount;
+            try {
+                plugin.getDatabase().beginTransaction();
+                hasAccount = doHasAccount(player);
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                hasAccount = false;
+                try {
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe(rollbackException.getMessage());
+                }
+            }
+            return hasAccount;
+        }
+    }
+
+    private boolean doCreatePlayerAccount(OfflinePlayer player) throws DatabaseException {
         //TODO
-        return true;
+        return false;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
-        //TODO
-        return true;
+        synchronized (plugin.getDatabase()) {
+            boolean created;
+            try {
+                plugin.getDatabase().beginTransaction();
+                created = doCreatePlayerAccount(player);
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                created = false;
+                try {
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe(rollbackException.getMessage());
+                }
+            }
+            return created;
+        }
+    }
+
+    private BigDecimal doGetBalance(OfflinePlayer player) throws DatabaseException {
+        BigDecimal balance;
+        try {
+            balance = plugin.getDatabase().getPlayerBalance(player);
+        } catch (PlayerNotFoundException e) {
+            balance = new BigDecimal(0);
+        }
+        return balance;
     }
 
     @Override
@@ -65,42 +122,60 @@ public class SQLEconomy implements Economy {
             double balance;
             try {
                 plugin.getDatabase().beginTransaction();
-                try {
-                    balance = plugin.getDatabase().getPlayerBalance(player);
-                } catch (PlayerNotFoundException e) {
-                    createPlayerAccount(player);
-                    balance = 0;
-                }
+                balance = doGetBalance(player).doubleValue();
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                balance = 0;
                 try {
-                    plugin.getLogger().severe(e.getMessage());
                     plugin.getDatabase().rollbackTransaction();
                 } catch (DatabaseException rollbackException) {
                     plugin.getLogger().severe(rollbackException.getMessage());
                 }
-                balance = 0;
             }
             return balance;
         }
     }
 
+    private boolean doHas(OfflinePlayer player, double amount) throws DatabaseException {
+        return doGetBalance(player).doubleValue() >= amount;
+    }
+
     @Override
     public boolean has(OfflinePlayer player, double amount) {
-        //TODO
-        return true;
+        synchronized (plugin.getDatabase()) {
+            boolean has;
+            try {
+                plugin.getDatabase().beginTransaction();
+                has = doHas(player, amount);
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                has = false;
+                try{
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe(rollbackException.getMessage());
+                }
+            }
+            return has;
+        }
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-        //TODO
-        return null;
+        synchronized (plugin.getDatabase()) {
+            //TODO
+            return null;
+        }
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        //TODO
-        return null;
+        synchronized (plugin.getDatabase()) {
+            //TODO
+            return null;
+        }
     }
 
     // Other methods of the interface that use the previous methods
