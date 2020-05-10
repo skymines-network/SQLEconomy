@@ -49,14 +49,7 @@ public class SQLEconomy implements Economy {
     }
 
     private boolean doHasAccount(OfflinePlayer player) throws DatabaseException {
-        boolean hasAccount;
-        try {
-            plugin.getDatabase().getPlayerBalance(player);
-            hasAccount = true;
-        } catch (PlayerNotFoundException e) {
-            hasAccount = false;
-        }
-        return hasAccount;
+        return plugin.getDatabase().hasAccount(player);
     }
 
     @Override

@@ -45,6 +45,16 @@ public class EconomyDatabase {
         }
     }
 
+    public boolean hasAccount(OfflinePlayer player) throws DatabaseException {
+        try {
+            getPlayerBalance(player);
+            return true;
+        } catch (PlayerNotFoundException e) {
+            return false;
+        }
+    }
+
+
     public BigDecimal getPlayerBalance(OfflinePlayer player) throws DatabaseException, PlayerNotFoundException {
         QueryPreparer preparer = new QueryPreparer();
         preparer.setString("player_name", player.getName());
@@ -69,7 +79,7 @@ public class EconomyDatabase {
         List<String> queries = plugin.getConfig().getStringList("queries.create_account");
         for(String query : queries) {
             try (
-                    PreparedStatement statement = preparer.prepare(plugin.getDatabaseConnection(), query);
+                    PreparedStatement statement = preparer.prepare(plugin.getDatabaseConnection(), query)
             ){
                 statement.executeUpdate();
             } catch (SQLException e) {
