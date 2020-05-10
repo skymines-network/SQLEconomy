@@ -44,6 +44,7 @@ queries:
   #SQL statement list (can be only 1) that will modify the database to reflect that the player account has been debited
   #In addition to global placeholders you can use
   # {{amount}} : The amount that will be debited
+  # {{amount_negative}} : Same as {{amount}} but with a negative sign
   # {{new_balance}} : The new total balance for the player
   debit:
     - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"

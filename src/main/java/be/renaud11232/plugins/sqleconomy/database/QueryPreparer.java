@@ -32,7 +32,7 @@ public class QueryPreparer {
 
     public PreparedStatement prepare(Connection connection, String query) throws SQLException {
         Map<String, Integer> paramPosition = new HashMap<>();
-        String regex = "\\{\\{(" + allParameters.stream().map(Pattern::quote).collect(Collectors.joining("|")) + ")\\}\\}";
+        String regex = Pattern.quote("{{") + "(" + allParameters.stream().map(Pattern::quote).collect(Collectors.joining("|")) + ")" + Pattern.quote("}}");
         Matcher matcher = Pattern.compile(regex).matcher(query);
         int i = 1;
         while(matcher.find()) {

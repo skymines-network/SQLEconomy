@@ -6,7 +6,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,8 +73,14 @@ public class SQLEconomy implements Economy {
     }
 
     private boolean doCreatePlayerAccount(OfflinePlayer player) throws DatabaseException {
-        plugin.getDatabase().createPlayerAccount(player);
-        return true;
+        boolean created;
+        if(plugin.getDatabase().hasAccount(player)) {
+            created = false;
+        } else {
+            plugin.getDatabase().createPlayerAccount(player);
+            created = true;
+        }
+        return created;
     }
 
     @Override
@@ -99,12 +104,12 @@ public class SQLEconomy implements Economy {
         }
     }
 
-    private BigDecimal doGetBalance(OfflinePlayer player) throws DatabaseException {
-        BigDecimal balance;
+    private double doGetBalance(OfflinePlayer player) throws DatabaseException {
+        double balance;
         try {
             balance = plugin.getDatabase().getPlayerBalance(player);
         } catch (PlayerNotFoundException e) {
-            balance = new BigDecimal(0);
+            balance = 0;
         }
         return balance;
     }
@@ -115,7 +120,7 @@ public class SQLEconomy implements Economy {
             double balance;
             try {
                 plugin.getDatabase().beginTransaction();
-                balance = doGetBalance(player).doubleValue();
+                balance = doGetBalance(player);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
                 plugin.getLogger().warning(e.getMessage());
@@ -131,7 +136,7 @@ public class SQLEconomy implements Economy {
     }
 
     private boolean doHas(OfflinePlayer player, double amount) throws DatabaseException {
-        return doGetBalance(player).doubleValue() >= amount;
+        return doGetBalance(player) >= amount;
     }
 
     @Override
@@ -155,19 +160,45 @@ public class SQLEconomy implements Economy {
         }
     }
 
+    private EconomyResponse doWithdrawPlayer(OfflinePlayer player, double amount) throws DatabaseException {
+        //TODO
+        return null;
+    }
+
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
         synchronized (plugin.getDatabase()) {
-            //TODO
-            return null;
+            EconomyResponse response;
+            try {
+                plugin.getDatabase().beginTransaction();
+                response = doWithdrawPlayer(player, amount);
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "There was an error with the database : " + e.getMessage());
+            }
+            return response;
         }
+    }
+
+    private EconomyResponse doDepositPlayer(OfflinePlayer player, double amount) throws DatabaseException {
+        //TODO
+        return null;
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
         synchronized (plugin.getDatabase()) {
-            //TODO
-            return null;
+            EconomyResponse response;
+            try {
+                plugin.getDatabase().beginTransaction();
+                response = doDepositPlayer(player, amount);
+                plugin.getDatabase().commitTransaction();
+            } catch (DatabaseException e) {
+                plugin.getLogger().warning(e.getMessage());
+                response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "There was an error with the database : " + e.getMessage());
+            }
+            return response;
         }
     }
 
