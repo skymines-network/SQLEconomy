@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -161,8 +162,17 @@ public class SQLEconomy implements Economy {
     }
 
     private EconomyResponse doWithdrawPlayer(OfflinePlayer player, double amount) throws DatabaseException {
-        //TODO
-        return null;
+        if(amount < 0) {
+            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot withdraw a negative amount.");
+        }
+        try {
+            BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
+            BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(amount));
+            plugin.getDatabase().withdrawPlayer(player, amount, newBalance.doubleValue());
+            return new EconomyResponse(amount, newBalance.doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
+        } catch (PlayerNotFoundException e) {
+            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "The given user does not exists");
+        }
     }
 
     @Override
@@ -182,8 +192,17 @@ public class SQLEconomy implements Economy {
     }
 
     private EconomyResponse doDepositPlayer(OfflinePlayer player, double amount) throws DatabaseException {
-        //TODO
-        return null;
+        if(amount < 0) {
+            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit a negative amount.");
+        }
+        try {
+            BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
+            BigDecimal newBalance = balance.add(BigDecimal.valueOf(amount));
+            plugin.getDatabase().depositPlayer(player, amount, newBalance.doubleValue());
+            return new EconomyResponse(amount, newBalance.doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
+        } catch (PlayerNotFoundException e) {
+            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "The given user does not exists");
+        }
     }
 
     @Override
