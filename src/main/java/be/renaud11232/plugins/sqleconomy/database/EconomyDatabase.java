@@ -85,7 +85,7 @@ public class EconomyDatabase {
         }
     }
 
-    public void withdrawPlayer(OfflinePlayer player, double amount, double newBalance) throws DatabaseException, PlayerNotFoundException {
+    public void withdrawPlayer(OfflinePlayer player, double amount, double newBalance) throws DatabaseException {
         QueryPreparer preparer = new QueryPreparer();
         preparer.setString("player_name", player.getName());
         preparer.setString("player_uuid", player.getUniqueId().toString());
@@ -102,7 +102,7 @@ public class EconomyDatabase {
         }
     }
 
-    public void depositPlayer(OfflinePlayer player, double amount, double newBalance) throws DatabaseException, PlayerNotFoundException {
+    public void depositPlayer(OfflinePlayer player, double amount, double newBalance) throws DatabaseException {
         QueryPreparer preparer = new QueryPreparer();
         preparer.setString("player_name", player.getName());
         preparer.setString("player_uuid", player.getUniqueId().toString());
