@@ -1,5 +1,7 @@
 package be.renaud11232.plugins.sqleconomy;
 
+import be.renaud11232.plugins.sqleconomy.database.command.ReloadCommandExecutor;
+import be.renaud11232.plugins.sqleconomy.database.command.ReloadTabCompleter;
 import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
 import be.renaud11232.plugins.sqleconomy.database.EconomyDatabase;
 import be.renaud11232.plugins.sqleconomy.database.connector.DatabaseType;
@@ -24,6 +26,8 @@ public class SQLEconomyPlugin extends JavaPlugin {
             economyDatabase = new EconomyDatabase(this);
             SQLEconomy economy = new SQLEconomy(this);
             Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
+            getCommand("sqleconomy").setExecutor(new ReloadCommandExecutor(this));
+            getCommand("sqleconomy").setTabCompleter(new ReloadTabCompleter());
         } catch (DatabaseException e) {
             getLogger().severe("Connection failed : " + e.getMessage());
             getPluginLoader().disablePlugin(this);
@@ -51,6 +55,7 @@ public class SQLEconomyPlugin extends JavaPlugin {
         try {
             if (databaseConnection != null && !databaseConnection.isClosed()) {
                 databaseConnection.close();
+                databaseConnection = null;
             }
         } catch (SQLException e) {
             throw new DatabaseException("Unable to close database connection.", e);

@@ -3,5 +3,19 @@ name: SQLEconomy
 version: 1.0.0
 description: An Economy plugin that stores data into a database.
 author: Renaud11232
+
 depend:
   - Vault
+
+commands:
+  sqleconomy:
+    description: Reloads the configuration and reconnects to the database
+    usage: /<command> reload
+    permission: sqleconomy.reload
+    aliases:
+      - sqleco
+
+permissions:
+  sqleconomy.reload:
+    description: Allows a user to reload the plugin
+    default: op
