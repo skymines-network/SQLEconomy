@@ -61,12 +61,12 @@ public class SQLEconomy implements Economy {
                 hasAccount = doHasAccount(player);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 hasAccount = false;
                 try {
                     plugin.getDatabase().rollbackTransaction();
                 } catch (DatabaseException rollbackException) {
-                    plugin.getLogger().severe(rollbackException.getMessage());
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
                 }
             }
             return hasAccount;
@@ -93,12 +93,12 @@ public class SQLEconomy implements Economy {
                 created = doCreatePlayerAccount(player);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 created = false;
                 try {
                     plugin.getDatabase().rollbackTransaction();
                 } catch (DatabaseException rollbackException) {
-                    plugin.getLogger().severe(rollbackException.getMessage());
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
                 }
             }
             return created;
@@ -124,12 +124,12 @@ public class SQLEconomy implements Economy {
                 balance = doGetBalance(player);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 balance = 0;
                 try {
                     plugin.getDatabase().rollbackTransaction();
                 } catch (DatabaseException rollbackException) {
-                    plugin.getLogger().severe(rollbackException.getMessage());
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
                 }
             }
             return balance;
@@ -149,12 +149,12 @@ public class SQLEconomy implements Economy {
                 has = doHas(player, amount);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 has = false;
                 try{
                     plugin.getDatabase().rollbackTransaction();
                 } catch (DatabaseException rollbackException) {
-                    plugin.getLogger().severe(rollbackException.getMessage());
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
                 }
             }
             return has;
@@ -185,8 +185,13 @@ public class SQLEconomy implements Economy {
                 response = doWithdrawPlayer(player, amount);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "There was an error with the database : " + e.getMessage());
+                try{
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
+                }
             }
             return response;
         }
@@ -216,8 +221,13 @@ public class SQLEconomy implements Economy {
                 response = doDepositPlayer(player, amount);
                 plugin.getDatabase().commitTransaction();
             } catch (DatabaseException e) {
-                plugin.getLogger().warning(e.getMessage());
+                plugin.getLogger().warning("Transaction failed : " + e.getMessage());
                 response = new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "There was an error with the database : " + e.getMessage());
+                try{
+                    plugin.getDatabase().rollbackTransaction();
+                } catch (DatabaseException rollbackException) {
+                    plugin.getLogger().severe("Unable to rollback transaction : " + rollbackException.getMessage());
+                }
             }
             return response;
         }

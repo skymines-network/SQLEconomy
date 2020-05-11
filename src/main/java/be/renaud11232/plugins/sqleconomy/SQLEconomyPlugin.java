@@ -20,7 +20,7 @@ public class SQLEconomyPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         try {
-            databaseConnection = DatabaseType.valueOf(getConfig().getString("database_connection.type", "MYSQL").toUpperCase()).getConnection(getConfig());
+            getDatabaseConnection();
             economyDatabase = new EconomyDatabase(this);
             SQLEconomy economy = new SQLEconomy(this);
             Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
@@ -47,8 +47,25 @@ public class SQLEconomyPlugin extends JavaPlugin {
         return economyDatabase;
     }
 
-    public Connection getDatabaseConnection() {
-        return databaseConnection;
+    public void closeDatabaseConnection() throws DatabaseException {
+        try {
+            if (databaseConnection != null && !databaseConnection.isClosed()) {
+                databaseConnection.close();
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Unable to close database connection.", e);
+        }
+    }
+
+    public Connection getDatabaseConnection() throws DatabaseException {
+        try {
+            if (databaseConnection == null || databaseConnection.isClosed()) {
+                databaseConnection = DatabaseType.valueOf(getConfig().getString("database_connection.type", "MYSQL").toUpperCase()).getConnection(getConfig());
+            }
+            return databaseConnection;
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to open database connection", e);
+        }
     }
 
 }
