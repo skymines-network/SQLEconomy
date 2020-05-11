@@ -7,7 +7,8 @@ import java.sql.Connection;
 
 public enum DatabaseType implements DatabaseConnector {
 
-    MYSQL(new MySQLConnector());
+    MYSQL(new MySQLConnector()),
+    SQLITE(new SQLiteConnector());
 
     private final DatabaseConnector connector;
 

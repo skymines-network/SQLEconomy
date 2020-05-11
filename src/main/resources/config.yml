@@ -1,27 +1,28 @@
 #The database connection options
 database_connection:
-  #Possible answers : MYSQL
+  #Possible answers : MYSQL, SQLITE
   #Defaults to MYSQL if omitted
   type: MYSQL
   #The database host
   #Required by [MYSQL]
-  #Ignored by []
+  #Ignored by [SQLITE]
   host: localhost
   #The database port
   #Required by [MYSQL]
-  #Ignored by []
+  #Ignored by [SQLITE]
   port: 3306
   #The database name
-  #Required by [MYSQL]
+  #Required by [MYSQL, SQLITE]
   #Ignored by []
+  #For file based database types (ie: SQLITE) this is a path to a database file instead of a database name
   database: db_name
   #The database username
   #Required by [MYSQL]
-  #Ignored by []
+  #Ignored by [SQLITE]
   user: db_user
   #The database password
   #Required by [MYSQL]
-  #Ignored by []
+  #Ignored by [SQLITE]
   password: db_password
 
 #The various SQL queries that will be used in order to interact with the database in order to get/set player balances
@@ -34,23 +35,23 @@ queries:
   #Single SQL statement that will return the current player balance.
   #This query must return 1 line and 1 column if the player has an account
   #Or an empty set (0 line) if the player doesn't have an account
-  get_balance: "SELECT amount FROM balance WHERE player = {{player_uuid}}"
+  get_balance: "SELECT amount FROM balance WHERE player = {{player_uuid}};"
   #SQL statement list (can be only 1) that will modify the database to reflect that the player account has been credited
   #In addition to global placeholders you can use
   # {{amount}} : The amount that will be credited
   # {{new_balance}} : The new total balance for the player
   credit:
-    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"
+    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}};"
   #SQL statement list (can be only 1) that will modify the database to reflect that the player account has been debited
   #In addition to global placeholders you can use
   # {{amount}} : The amount that will be debited
   # {{amount_negative}} : Same as {{amount}} but with a negative sign
   # {{new_balance}} : The new total balance for the player
   debit:
-    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}}"
+    - "UPDATE balance SET amount = {{new_balance}} WHERE player = {{player_uuid}};"
   #SQL statement list (can be only 1) that will create a player bank account.
   create_account:
-    - "INSERT INTO balance (player, amount) VALUES ({{player_uuid}}, 0)"
+    - "INSERT INTO balance (player, amount) VALUES ({{player_uuid}}, 0);"
 
 #Currency options
 currency:

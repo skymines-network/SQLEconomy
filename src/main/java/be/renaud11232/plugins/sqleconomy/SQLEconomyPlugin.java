@@ -21,16 +21,16 @@ public class SQLEconomyPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        getCommand("sqleconomy").setExecutor(new ReloadCommandExecutor(this));
+        getCommand("sqleconomy").setTabCompleter(new ReloadTabCompleter());
+        economyDatabase = new EconomyDatabase(this);
+        SQLEconomy economy = new SQLEconomy(this);
+        Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
         try {
             getDatabaseConnection();
-            economyDatabase = new EconomyDatabase(this);
-            SQLEconomy economy = new SQLEconomy(this);
-            Bukkit.getServicesManager().register(Economy.class, economy, this, ServicePriority.High);
-            getCommand("sqleconomy").setExecutor(new ReloadCommandExecutor(this));
-            getCommand("sqleconomy").setTabCompleter(new ReloadTabCompleter());
         } catch (DatabaseException e) {
             getLogger().severe("Connection failed : " + e.getMessage());
-            getPluginLoader().disablePlugin(this);
+            getLogger().severe("If you haven't configured the plugin yet, this is normal. Configure it and run /sqleconomy reload");
         }
     }
 
