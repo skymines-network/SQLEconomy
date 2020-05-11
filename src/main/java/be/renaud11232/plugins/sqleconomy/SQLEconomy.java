@@ -163,7 +163,8 @@ public class SQLEconomy implements Economy {
 
     private EconomyResponse doWithdrawPlayer(OfflinePlayer player, double amount) throws DatabaseException {
         if(amount < 0) {
-            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot withdraw a negative amount.");
+            EconomyResponse response = doDepositPlayer(player, -amount);
+            return new EconomyResponse(-response.amount, response.balance, response.type, response.errorMessage);
         }
         try {
             BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
@@ -193,7 +194,8 @@ public class SQLEconomy implements Economy {
 
     private EconomyResponse doDepositPlayer(OfflinePlayer player, double amount) throws DatabaseException {
         if(amount < 0) {
-            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit a negative amount.");
+            EconomyResponse response = doWithdrawPlayer(player, -amount);
+            return new EconomyResponse(-response.amount, response.balance, response.type, response.errorMessage);
         }
         try {
             BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
