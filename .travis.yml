@@ -1,0 +1,16 @@
+dist: bionic
+language: java
+
+jobs:
+  include:
+    - stage: compile
+      script: mvn package
+    - stage: deploy
+      deploy:
+        provider: releases
+        api_key: $GITHUB_OAUTH_TOKEN
+        file_glob: true
+        file: target/*.jar
+        cleanup: false
+        on:
+          tags: true
