@@ -13,5 +13,6 @@ jobs:
         file_glob: true
         file: target/*.jar
         cleanup: false
+        skip_cleanup: true
         on:
           tags: true
