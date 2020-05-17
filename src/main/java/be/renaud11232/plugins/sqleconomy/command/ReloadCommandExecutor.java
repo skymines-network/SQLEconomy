@@ -1,4 +1,4 @@
-package be.renaud11232.plugins.sqleconomy.database.command;
+package be.renaud11232.plugins.sqleconomy.command;
 
 import be.renaud11232.plugins.sqleconomy.SQLEconomyPlugin;
 import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;

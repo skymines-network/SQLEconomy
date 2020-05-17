@@ -1,4 +1,4 @@
-package be.renaud11232.plugins.sqleconomy.database.command;
+package be.renaud11232.plugins.sqleconomy.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
