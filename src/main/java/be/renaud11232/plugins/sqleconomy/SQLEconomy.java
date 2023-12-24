@@ -2,6 +2,7 @@ package be.renaud11232.plugins.sqleconomy;
 
 import be.renaud11232.plugins.sqleconomy.database.exceptions.DatabaseException;
 import be.renaud11232.plugins.sqleconomy.database.exceptions.PlayerNotFoundException;
+import be.renaud11232.plugins.sqleconomy.discord.SQLEconomyWebhook;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -170,6 +171,8 @@ public class SQLEconomy implements Economy {
             BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
             BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(amount));
             plugin.getDatabase().withdrawPlayer(player, amount, newBalance.doubleValue());
+            SQLEconomyWebhook webhook = new SQLEconomyWebhook();
+            webhook.create(player, "-" + amount, newBalance.doubleValue());
             return new EconomyResponse(amount, newBalance.doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
         } catch (PlayerNotFoundException e) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "The given user does not exists");
@@ -206,6 +209,8 @@ public class SQLEconomy implements Economy {
             BigDecimal balance = BigDecimal.valueOf(plugin.getDatabase().getPlayerBalance(player));
             BigDecimal newBalance = balance.add(BigDecimal.valueOf(amount));
             plugin.getDatabase().depositPlayer(player, amount, newBalance.doubleValue());
+            SQLEconomyWebhook webhook = new SQLEconomyWebhook();
+            webhook.create(player, "+" + amount, newBalance.doubleValue());
             return new EconomyResponse(amount, newBalance.doubleValue(), EconomyResponse.ResponseType.SUCCESS, null);
         } catch (PlayerNotFoundException e) {
             return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "The given user does not exists");
